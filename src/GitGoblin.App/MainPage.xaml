@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:GitGoblin.Core.ViewModels;assembly=GitGoblin.Core"
+             x:Class="GitGoblin.App.MainPage"
+             x:DataType="vm:MainViewModel"
+             Title="Home"
+             BackgroundColor="{AppThemeBinding Light={StaticResource Gray100}, Dark={StaticResource Gray900}}">
+
+    <ScrollView>
+        <VerticalStackLayout Spacing="20" Padding="20">
+            
+            <!-- Header -->
+            <Frame BackgroundColor="{StaticResource Primary}" 
+                   CornerRadius="15" 
+                   Padding="25"
+                   HasShadow="True">
+                <VerticalStackLayout Spacing="10">
+                    <Label Text="Welcome to GitGoblin" 
+                           FontSize="28" 
+                           FontAttributes="Bold" 
+                           TextColor="White"/>
+                    <Label Text="Your cross-platform Git client for GitHub and Azure DevOps" 
+                           FontSize="16" 
+                           TextColor="White" 
+                           Opacity="0.9"/>
+                </VerticalStackLayout>
+            </Frame>
+
+            <!-- Connection Status -->
+            <Frame CornerRadius="10" Padding="15" HasShadow="True">
+                <VerticalStackLayout Spacing="15">
+                    <Label Text="Connection Status" FontSize="18" FontAttributes="Bold"/>
+                    
+                    <Grid ColumnDefinitions="Auto,*,Auto" RowDefinitions="Auto,Auto" ColumnSpacing="10" RowSpacing="10">
+                        <Frame Grid.Row="0" Grid.Column="0" 
+                               WidthRequest="12" HeightRequest="12" 
+                               CornerRadius="6" 
+                               BackgroundColor="{Binding IsGitHubConnected, Converter={StaticResource BoolToColorConverter}}"
+                               Padding="0"/>
+                        <Label Grid.Row="0" Grid.Column="1" Text="GitHub" VerticalOptions="Center"/>
+                        <Label Grid.Row="0" Grid.Column="2" 
+                               Text="{Binding IsGitHubConnected, Converter={StaticResource BoolToStatusConverter}}"
+                               TextColor="{Binding IsGitHubConnected, Converter={StaticResource BoolToColorConverter}}"/>
+                        
+                        <Frame Grid.Row="1" Grid.Column="0" 
+                               WidthRequest="12" HeightRequest="12" 
+                               CornerRadius="6" 
+                               BackgroundColor="{Binding IsAzureDevOpsConnected, Converter={StaticResource BoolToColorConverter}}"
+                               Padding="0"/>
+                        <Label Grid.Row="1" Grid.Column="1" Text="Azure DevOps" VerticalOptions="Center"/>
+                        <Label Grid.Row="1" Grid.Column="2" 
+                               Text="{Binding IsAzureDevOpsConnected, Converter={StaticResource BoolToStatusConverter}}"
+                               TextColor="{Binding IsAzureDevOpsConnected, Converter={StaticResource BoolToColorConverter}}"/>
+                    </Grid>
+                </VerticalStackLayout>
+            </Frame>
+
+            <!-- Quick Actions -->
+            <Label Text="Quick Actions" FontSize="18" FontAttributes="Bold"/>
+            
+            <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto" ColumnSpacing="15" RowSpacing="15">
+                <Frame Grid.Row="0" Grid.Column="0" CornerRadius="10" Padding="20" HasShadow="True">
+                    <Frame.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnRepositoriesTapped"/>
+                    </Frame.GestureRecognizers>
+                    <VerticalStackLayout Spacing="10" HorizontalOptions="Center">
+                        <Label Text="📁" FontSize="32" HorizontalOptions="Center"/>
+                        <Label Text="Repositories" FontAttributes="Bold" HorizontalOptions="Center"/>
+                        <Label Text="Browse your repos" FontSize="12" TextColor="Gray" HorizontalOptions="Center"/>
+                    </VerticalStackLayout>
+                </Frame>
+                
+                <Frame Grid.Row="0" Grid.Column="1" CornerRadius="10" Padding="20" HasShadow="True">
+                    <Frame.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnNotificationsTapped"/>
+                    </Frame.GestureRecognizers>
+                    <VerticalStackLayout Spacing="10" HorizontalOptions="Center">
+                        <Label Text="🔔" FontSize="32" HorizontalOptions="Center"/>
+                        <Label Text="Notifications" FontAttributes="Bold" HorizontalOptions="Center"/>
+                        <Label Text="Stay updated" FontSize="12" TextColor="Gray" HorizontalOptions="Center"/>
+                    </VerticalStackLayout>
+                </Frame>
+                
+                <Frame Grid.Row="1" Grid.Column="0" CornerRadius="10" Padding="20" HasShadow="True">
+                    <Frame.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnPullRequestsTapped"/>
+                    </Frame.GestureRecognizers>
+                    <VerticalStackLayout Spacing="10" HorizontalOptions="Center">
+                        <Label Text="🔀" FontSize="32" HorizontalOptions="Center"/>
+                        <Label Text="Pull Requests" FontAttributes="Bold" HorizontalOptions="Center"/>
+                        <Label Text="Review changes" FontSize="12" TextColor="Gray" HorizontalOptions="Center"/>
+                    </VerticalStackLayout>
+                </Frame>
+                
+                <Frame Grid.Row="1" Grid.Column="1" CornerRadius="10" Padding="20" HasShadow="True">
+                    <Frame.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnSettingsTapped"/>
+                    </Frame.GestureRecognizers>
+                    <VerticalStackLayout Spacing="10" HorizontalOptions="Center">
+                        <Label Text="⚙️" FontSize="32" HorizontalOptions="Center"/>
+                        <Label Text="Settings" FontAttributes="Bold" HorizontalOptions="Center"/>
+                        <Label Text="Configure accounts" FontSize="12" TextColor="Gray" HorizontalOptions="Center"/>
+                    </VerticalStackLayout>
+                </Frame>
+            </Grid>
+
+            <!-- Error Message -->
+            <Label Text="{Binding ErrorMessage}" 
+                   TextColor="Red" 
+                   IsVisible="{Binding ErrorMessage, Converter={StaticResource StringToBoolConverter}}"
+                   HorizontalOptions="Center"/>
+
+            <!-- Loading Indicator -->
+            <ActivityIndicator IsRunning="{Binding IsLoading}" 
+                              IsVisible="{Binding IsLoading}" 
+                              Color="{StaticResource Primary}"
+                              HorizontalOptions="Center"/>
+
+        </VerticalStackLayout>
+    </ScrollView>
+
+</ContentPage>

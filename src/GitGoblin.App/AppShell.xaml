@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Shell
+    x:Class="GitGoblin.App.AppShell"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:local="clr-namespace:GitGoblin.App"
+    xmlns:views="clr-namespace:GitGoblin.App.Views"
+    Title="GitGoblin"
+    Shell.FlyoutBehavior="Flyout">
+
+    <Shell.FlyoutHeader>
+        <Grid HeightRequest="120" BackgroundColor="{StaticResource Primary}">
+            <VerticalStackLayout VerticalOptions="Center" Padding="20">
+                <Label Text="GitGoblin" FontSize="24" FontAttributes="Bold" TextColor="White"/>
+                <Label Text="Git Client" FontSize="14" TextColor="White" Opacity="0.8"/>
+            </VerticalStackLayout>
+        </Grid>
+    </Shell.FlyoutHeader>
+
+    <FlyoutItem Title="Home" Icon="{OnPlatform 'home.png'}">
+        <ShellContent ContentTemplate="{DataTemplate local:MainPage}" Route="MainPage"/>
+    </FlyoutItem>
+
+    <FlyoutItem Title="Repositories" Icon="{OnPlatform 'repo.png'}">
+        <ShellContent ContentTemplate="{DataTemplate views:RepositoriesPage}" Route="RepositoriesPage"/>
+    </FlyoutItem>
+
+    <FlyoutItem Title="Notifications" Icon="{OnPlatform 'notification.png'}">
+        <ShellContent ContentTemplate="{DataTemplate views:NotificationsPage}" Route="NotificationsPage"/>
+    </FlyoutItem>
+
+    <FlyoutItem Title="Settings" Icon="{OnPlatform 'settings.png'}">
+        <ShellContent ContentTemplate="{DataTemplate views:SettingsPage}" Route="SettingsPage"/>
+    </FlyoutItem>
+
+</Shell>
