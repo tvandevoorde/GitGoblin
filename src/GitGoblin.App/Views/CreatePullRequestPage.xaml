@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:GitGoblin.Core.ViewModels;assembly=GitGoblin.Core"
+             x:Class="GitGoblin.App.Views.CreatePullRequestPage"
+             x:DataType="vm:CreatePullRequestViewModel"
+             Title="Create Pull Request"
+             BackgroundColor="{AppThemeBinding Light={StaticResource Gray100}, Dark={StaticResource Gray900}}">
+
+    <ScrollView>
+        <VerticalStackLayout Spacing="15" Padding="15">
+            <!-- Title -->
+            <Frame CornerRadius="10" Padding="15" HasShadow="True">
+                <VerticalStackLayout Spacing="10">
+                    <Label Text="Title" FontAttributes="Bold"/>
+                    <Entry Text="{Binding Title}" Placeholder="Pull request title"/>
+                </VerticalStackLayout>
+            </Frame>
+
+            <!-- Branch Selection -->
+            <Frame CornerRadius="10" Padding="15" HasShadow="True">
+                <VerticalStackLayout Spacing="15">
+                    <Label Text="Branches" FontAttributes="Bold"/>
+                    
+                    <Grid ColumnDefinitions="*,Auto,*" ColumnSpacing="10">
+                        <VerticalStackLayout>
+                            <Label Text="Source (Head)" FontSize="12" TextColor="Gray"/>
+                            <Picker ItemsSource="{Binding Branches}" 
+                                    SelectedItem="{Binding HeadBranch}"
+                                    Title="Select branch"/>
+                        </VerticalStackLayout>
+                        
+                        <Label Grid.Column="1" Text="→" FontSize="20" VerticalOptions="End" Margin="0,0,0,10"/>
+                        
+                        <VerticalStackLayout Grid.Column="2">
+                            <Label Text="Target (Base)" FontSize="12" TextColor="Gray"/>
+                            <Picker ItemsSource="{Binding Branches}" 
+                                    SelectedItem="{Binding BaseBranch}"
+                                    Title="Select branch"/>
+                        </VerticalStackLayout>
+                    </Grid>
+                </VerticalStackLayout>
+            </Frame>
+
+            <!-- Description -->
+            <Frame CornerRadius="10" Padding="15" HasShadow="True">
+                <VerticalStackLayout Spacing="10">
+                    <Label Text="Description" FontAttributes="Bold"/>
+                    <Editor Text="{Binding Body}" 
+                            Placeholder="Describe your changes..."
+                            HeightRequest="150"
+                            AutoSize="TextChanges"/>
+                </VerticalStackLayout>
+            </Frame>
+
+            <!-- Options -->
+            <Frame CornerRadius="10" Padding="15" HasShadow="True">
+                <HorizontalStackLayout Spacing="10">
+                    <CheckBox IsChecked="{Binding IsDraft}"/>
+                    <Label Text="Create as draft" VerticalOptions="Center"/>
+                </HorizontalStackLayout>
+            </Frame>
+
+            <!-- Error Message -->
+            <Label Text="{Binding ErrorMessage}" 
+                   TextColor="Red" 
+                   IsVisible="{Binding ErrorMessage, Converter={StaticResource StringToBoolConverter}}"/>
+
+            <!-- Submit Button -->
+            <Button Text="Create Pull Request" 
+                    Command="{Binding CreatePullRequestCommand}"
+                    BackgroundColor="{StaticResource Primary}"
+                    TextColor="White"
+                    HeightRequest="50"
+                    CornerRadius="10"/>
+
+            <!-- Loading Indicator -->
+            <ActivityIndicator IsRunning="{Binding IsLoading}" 
+                              IsVisible="{Binding IsLoading}" 
+                              Color="{StaticResource Primary}"/>
+
+            <!-- Success Message -->
+            <Frame CornerRadius="10" 
+                   Padding="20" 
+                   BackgroundColor="Green"
+                   IsVisible="{Binding CreatedPullRequest, Converter={StaticResource StringToBoolConverter}}">
+                <VerticalStackLayout Spacing="10">
+                    <Label Text="✓ Pull Request Created!" FontSize="18" TextColor="White" FontAttributes="Bold"/>
+                    <Label Text="{Binding CreatedPullRequest.HtmlUrl}" TextColor="White"/>
+                </VerticalStackLayout>
+            </Frame>
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

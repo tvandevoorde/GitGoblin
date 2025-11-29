@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:GitGoblin.Core.ViewModels;assembly=GitGoblin.Core"
+             x:Class="GitGoblin.App.Views.RepositoriesPage"
+             x:DataType="vm:RepositoriesViewModel"
+             Title="Repositories"
+             BackgroundColor="{AppThemeBinding Light={StaticResource Gray100}, Dark={StaticResource Gray900}}">
+
+    <Grid RowDefinitions="Auto,*">
+        <!-- Search Bar -->
+        <Frame Grid.Row="0" Margin="15" Padding="0" CornerRadius="10" HasShadow="True">
+            <SearchBar Placeholder="Search repositories..." 
+                       Text="{Binding SearchQuery}"
+                       BackgroundColor="Transparent"/>
+        </Frame>
+
+        <!-- Repository List -->
+        <RefreshView Grid.Row="1" 
+                     IsRefreshing="{Binding IsLoading}" 
+                     Command="{Binding RefreshCommand}">
+            <CollectionView ItemsSource="{Binding Repositories}"
+                            SelectionMode="Single"
+                            SelectionChanged="OnRepositorySelected">
+                <CollectionView.EmptyView>
+                    <VerticalStackLayout VerticalOptions="Center" HorizontalOptions="Center" Spacing="10">
+                        <Label Text="📁" FontSize="48"/>
+                        <Label Text="No repositories found" FontSize="18" TextColor="Gray"/>
+                        <Label Text="Connect your account to see repositories" FontSize="14" TextColor="Gray"/>
+                    </VerticalStackLayout>
+                </CollectionView.EmptyView>
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Frame Margin="15,5" Padding="15" CornerRadius="10" HasShadow="True">
+                            <Grid ColumnDefinitions="Auto,*,Auto" RowDefinitions="Auto,Auto,Auto" ColumnSpacing="15" RowSpacing="5">
+                                <!-- Avatar -->
+                                <Frame Grid.RowSpan="3" 
+                                       WidthRequest="50" HeightRequest="50" 
+                                       CornerRadius="25" 
+                                       Padding="0" 
+                                       IsClippedToBounds="True">
+                                    <Image Source="{Binding OwnerAvatarUrl}" Aspect="AspectFill"/>
+                                </Frame>
+                                
+                                <!-- Repository Name -->
+                                <Label Grid.Row="0" Grid.Column="1" 
+                                       Text="{Binding FullName}" 
+                                       FontSize="16" 
+                                       FontAttributes="Bold"
+                                       LineBreakMode="TailTruncation"/>
+                                
+                                <!-- Private Badge -->
+                                <Frame Grid.Row="0" Grid.Column="2" 
+                                       IsVisible="{Binding IsPrivate}"
+                                       BackgroundColor="{StaticResource Primary}"
+                                       CornerRadius="5" 
+                                       Padding="8,3">
+                                    <Label Text="Private" FontSize="10" TextColor="White"/>
+                                </Frame>
+                                
+                                <!-- Description -->
+                                <Label Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2"
+                                       Text="{Binding Description}" 
+                                       FontSize="14" 
+                                       TextColor="Gray"
+                                       MaxLines="2"
+                                       LineBreakMode="TailTruncation"/>
+                                
+                                <!-- Stats -->
+                                <HorizontalStackLayout Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" Spacing="15">
+                                    <HorizontalStackLayout Spacing="5">
+                                        <Label Text="⭐" FontSize="12"/>
+                                        <Label Text="{Binding StargazersCount}" FontSize="12" TextColor="Gray"/>
+                                    </HorizontalStackLayout>
+                                    <HorizontalStackLayout Spacing="5">
+                                        <Label Text="🔀" FontSize="12"/>
+                                        <Label Text="{Binding ForksCount}" FontSize="12" TextColor="Gray"/>
+                                    </HorizontalStackLayout>
+                                    <HorizontalStackLayout Spacing="5" IsVisible="{Binding Language, Converter={StaticResource StringToBoolConverter}}">
+                                        <Label Text="💻" FontSize="12"/>
+                                        <Label Text="{Binding Language}" FontSize="12" TextColor="Gray"/>
+                                    </HorizontalStackLayout>
+                                </HorizontalStackLayout>
+                            </Grid>
+                        </Frame>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </RefreshView>
+
+        <!-- Loading Overlay -->
+        <ActivityIndicator Grid.RowSpan="2" 
+                          IsRunning="{Binding IsLoading}" 
+                          IsVisible="{Binding IsLoading}"
+                          Color="{StaticResource Primary}"
+                          VerticalOptions="Center"
+                          HorizontalOptions="Center"/>
+    </Grid>
+</ContentPage>

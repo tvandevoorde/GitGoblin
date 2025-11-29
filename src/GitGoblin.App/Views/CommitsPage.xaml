@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:GitGoblin.Core.ViewModels;assembly=GitGoblin.Core"
+             x:Class="GitGoblin.App.Views.CommitsPage"
+             x:DataType="vm:CommitsViewModel"
+             Title="Commits"
+             BackgroundColor="{AppThemeBinding Light={StaticResource Gray100}, Dark={StaticResource Gray900}}">
+
+    <Grid RowDefinitions="Auto,*">
+        <!-- Branch Selector -->
+        <Frame Grid.Row="0" Margin="15" Padding="10" CornerRadius="10" HasShadow="True">
+            <HorizontalStackLayout Spacing="10">
+                <Label Text="Branch:" VerticalOptions="Center"/>
+                <Picker ItemsSource="{Binding Branches}" 
+                        SelectedItem="{Binding SelectedBranch}"
+                        HorizontalOptions="FillAndExpand"/>
+            </HorizontalStackLayout>
+        </Frame>
+
+        <!-- Commits List -->
+        <RefreshView Grid.Row="1" 
+                     IsRefreshing="{Binding IsLoading}" 
+                     Command="{Binding RefreshCommand}">
+            <CollectionView ItemsSource="{Binding Commits}">
+                <CollectionView.EmptyView>
+                    <VerticalStackLayout VerticalOptions="Center" HorizontalOptions="Center" Spacing="10">
+                        <Label Text="📝" FontSize="48"/>
+                        <Label Text="No commits found" FontSize="18" TextColor="Gray"/>
+                    </VerticalStackLayout>
+                </CollectionView.EmptyView>
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Frame Margin="15,5" Padding="15" CornerRadius="10" HasShadow="True">
+                            <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto,Auto" ColumnSpacing="15" RowSpacing="5">
+                                <!-- Avatar -->
+                                <Frame Grid.RowSpan="3" 
+                                       WidthRequest="45" HeightRequest="45" 
+                                       CornerRadius="23" 
+                                       Padding="0" 
+                                       IsClippedToBounds="True"
+                                       VerticalOptions="Start">
+                                    <Image Source="{Binding AuthorAvatarUrl}" Aspect="AspectFill"/>
+                                </Frame>
+                                
+                                <!-- Commit Message -->
+                                <Label Grid.Row="0" Grid.Column="1" 
+                                       Text="{Binding Message}" 
+                                       FontSize="15"
+                                       MaxLines="2"
+                                       LineBreakMode="TailTruncation"/>
+                                
+                                <!-- Author & Date -->
+                                <HorizontalStackLayout Grid.Row="1" Grid.Column="1" Spacing="10">
+                                    <Label Text="{Binding AuthorName}" FontSize="13" TextColor="Gray"/>
+                                    <Label Text="•" TextColor="Gray"/>
+                                    <Label Text="{Binding CommitDate, StringFormat='{0:MMM dd, yyyy}'}" FontSize="13" TextColor="Gray"/>
+                                </HorizontalStackLayout>
+                                
+                                <!-- SHA -->
+                                <Frame Grid.Row="2" Grid.Column="1" 
+                                       BackgroundColor="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray600}}"
+                                       CornerRadius="5" 
+                                       Padding="8,3"
+                                       HorizontalOptions="Start">
+                                    <Label Text="{Binding ShortSha}" 
+                                           FontSize="12" 
+                                           FontFamily="Consolas"/>
+                                </Frame>
+                            </Grid>
+                        </Frame>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </RefreshView>
+    </Grid>
+</ContentPage>

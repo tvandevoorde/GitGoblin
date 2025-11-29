@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:GitGoblin.Core.ViewModels;assembly=GitGoblin.Core"
+             x:Class="GitGoblin.App.Views.SettingsPage"
+             x:DataType="vm:MainViewModel"
+             Title="Settings"
+             BackgroundColor="{AppThemeBinding Light={StaticResource Gray100}, Dark={StaticResource Gray900}}">
+
+    <ScrollView>
+        <VerticalStackLayout Spacing="15" Padding="15">
+            <!-- GitHub Configuration -->
+            <Label Text="GitHub" FontSize="20" FontAttributes="Bold"/>
+            <Frame CornerRadius="10" Padding="20" HasShadow="True">
+                <VerticalStackLayout Spacing="15">
+                    <HorizontalStackLayout Spacing="10">
+                        <Frame WidthRequest="12" HeightRequest="12" 
+                               CornerRadius="6" 
+                               BackgroundColor="{Binding IsGitHubConnected, Converter={StaticResource BoolToColorConverter}}"
+                               Padding="0"/>
+                        <Label Text="{Binding IsGitHubConnected, Converter={StaticResource BoolToStatusConverter}}" 
+                               VerticalOptions="Center"/>
+                    </HorizontalStackLayout>
+                    
+                    <VerticalStackLayout Spacing="10" IsVisible="{Binding IsGitHubConnected, Converter={StaticResource InverseBoolConverter}}">
+                        <Label Text="Personal Access Token" FontSize="12" TextColor="Gray"/>
+                        <Entry x:Name="GitHubTokenEntry" 
+                               Placeholder="ghp_xxxxxxxxxxxx"
+                               IsPassword="True"/>
+                        <Label Text="Optional: GitHub Enterprise Server URL" FontSize="12" TextColor="Gray"/>
+                        <Entry x:Name="GitHubServerEntry" 
+                               Placeholder="https://github.mycompany.com (optional)"/>
+                        <Button Text="Connect to GitHub" 
+                                Clicked="OnConnectGitHubClicked"
+                                BackgroundColor="{StaticResource Primary}"/>
+                    </VerticalStackLayout>
+                    
+                    <VerticalStackLayout Spacing="5" IsVisible="{Binding IsGitHubConnected}">
+                        <HorizontalStackLayout Spacing="10">
+                            <Frame WidthRequest="40" HeightRequest="40" CornerRadius="20" Padding="0" IsClippedToBounds="True">
+                                <Image Source="{Binding CurrentAccount.AvatarUrl}" Aspect="AspectFill"/>
+                            </Frame>
+                            <VerticalStackLayout VerticalOptions="Center">
+                                <Label Text="{Binding CurrentAccount.Name}" FontAttributes="Bold"/>
+                                <Label Text="{Binding CurrentAccount.Login}" FontSize="12" TextColor="Gray"/>
+                            </VerticalStackLayout>
+                        </HorizontalStackLayout>
+                        <Button Text="Disconnect" 
+                                Clicked="OnDisconnectGitHubClicked"
+                                BackgroundColor="Red"
+                                TextColor="White"
+                                Margin="0,10,0,0"/>
+                    </VerticalStackLayout>
+                </VerticalStackLayout>
+            </Frame>
+
+            <!-- Azure DevOps Configuration -->
+            <Label Text="Azure DevOps Server" FontSize="20" FontAttributes="Bold"/>
+            <Frame CornerRadius="10" Padding="20" HasShadow="True">
+                <VerticalStackLayout Spacing="15">
+                    <HorizontalStackLayout Spacing="10">
+                        <Frame WidthRequest="12" HeightRequest="12" 
+                               CornerRadius="6" 
+                               BackgroundColor="{Binding IsAzureDevOpsConnected, Converter={StaticResource BoolToColorConverter}}"
+                               Padding="0"/>
+                        <Label Text="{Binding IsAzureDevOpsConnected, Converter={StaticResource BoolToStatusConverter}}" 
+                               VerticalOptions="Center"/>
+                    </HorizontalStackLayout>
+                    
+                    <VerticalStackLayout Spacing="10" IsVisible="{Binding IsAzureDevOpsConnected, Converter={StaticResource InverseBoolConverter}}">
+                        <Label Text="Server URL" FontSize="12" TextColor="Gray"/>
+                        <Entry x:Name="AzureDevOpsServerEntry" 
+                               Placeholder="https://dev.azure.com/yourorg or https://tfs.mycompany.com/tfs"/>
+                        <Label Text="Personal Access Token" FontSize="12" TextColor="Gray"/>
+                        <Entry x:Name="AzureDevOpsTokenEntry" 
+                               Placeholder="Your PAT"
+                               IsPassword="True"/>
+                        <Button Text="Connect to Azure DevOps" 
+                                Clicked="OnConnectAzureDevOpsClicked"
+                                BackgroundColor="#0078D4"/>
+                    </VerticalStackLayout>
+                    
+                    <VerticalStackLayout Spacing="5" IsVisible="{Binding IsAzureDevOpsConnected}">
+                        <Label Text="{Binding CurrentAccount.Name}" FontAttributes="Bold"/>
+                        <Button Text="Disconnect" 
+                                Clicked="OnDisconnectAzureDevOpsClicked"
+                                BackgroundColor="Red"
+                                TextColor="White"
+                                Margin="0,10,0,0"/>
+                    </VerticalStackLayout>
+                </VerticalStackLayout>
+            </Frame>
+
+            <!-- About Section -->
+            <Label Text="About" FontSize="20" FontAttributes="Bold"/>
+            <Frame CornerRadius="10" Padding="20" HasShadow="True">
+                <VerticalStackLayout Spacing="10">
+                    <Label Text="GitGoblin" FontSize="18" FontAttributes="Bold"/>
+                    <Label Text="Version 1.0.0" TextColor="Gray"/>
+                    <Label Text="A cross-platform GitHub client built with .NET MAUI" TextColor="Gray"/>
+                    <BoxView HeightRequest="1" Color="LightGray" Margin="0,10"/>
+                    <Label Text="Supported Platforms:" FontAttributes="Bold"/>
+                    <Label Text="• GitHub.com" TextColor="Gray"/>
+                    <Label Text="• GitHub Enterprise Server" TextColor="Gray"/>
+                    <Label Text="• Azure DevOps Services" TextColor="Gray"/>
+                    <Label Text="• Azure DevOps Server (TFS)" TextColor="Gray"/>
+                </VerticalStackLayout>
+            </Frame>
+
+            <!-- Error Message -->
+            <Label Text="{Binding ErrorMessage}" 
+                   TextColor="Red" 
+                   IsVisible="{Binding ErrorMessage, Converter={StaticResource StringToBoolConverter}}"/>
+
+            <!-- Loading Indicator -->
+            <ActivityIndicator IsRunning="{Binding IsLoading}" 
+                              IsVisible="{Binding IsLoading}" 
+                              Color="{StaticResource Primary}"/>
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

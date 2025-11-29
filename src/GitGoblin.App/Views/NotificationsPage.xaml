@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:GitGoblin.Core.ViewModels;assembly=GitGoblin.Core"
+             x:Class="GitGoblin.App.Views.NotificationsPage"
+             x:DataType="vm:NotificationsViewModel"
+             Title="Notifications"
+             BackgroundColor="{AppThemeBinding Light={StaticResource Gray100}, Dark={StaticResource Gray900}}">
+
+    <Grid RowDefinitions="Auto,*">
+        <!-- Filter -->
+        <Frame Grid.Row="0" Margin="15" Padding="10" CornerRadius="10" HasShadow="True">
+            <HorizontalStackLayout Spacing="10" HorizontalOptions="Center">
+                <CheckBox IsChecked="{Binding ShowUnreadOnly}"/>
+                <Label Text="Show unread only" VerticalOptions="Center"/>
+            </HorizontalStackLayout>
+        </Frame>
+
+        <!-- Notifications List -->
+        <RefreshView Grid.Row="1" 
+                     IsRefreshing="{Binding IsLoading}" 
+                     Command="{Binding RefreshCommand}">
+            <CollectionView ItemsSource="{Binding Notifications}">
+                <CollectionView.EmptyView>
+                    <VerticalStackLayout VerticalOptions="Center" HorizontalOptions="Center" Spacing="10">
+                        <Label Text="🔔" FontSize="48"/>
+                        <Label Text="No notifications" FontSize="18" TextColor="Gray"/>
+                        <Label Text="You're all caught up!" FontSize="14" TextColor="Gray"/>
+                    </VerticalStackLayout>
+                </CollectionView.EmptyView>
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <SwipeView>
+                            <SwipeView.RightItems>
+                                <SwipeItems>
+                                    <SwipeItem Text="Mark Read" 
+                                               BackgroundColor="{StaticResource Primary}"
+                                               Command="{Binding Source={RelativeSource AncestorType={x:Type vm:NotificationsViewModel}}, Path=MarkAsReadCommand}"
+                                               CommandParameter="{Binding Id}"/>
+                                </SwipeItems>
+                            </SwipeView.RightItems>
+                            <Frame Margin="15,5" Padding="15" CornerRadius="10" HasShadow="True"
+                                   BackgroundColor="{Binding IsUnread, Converter={StaticResource UnreadToColorConverter}}">
+                                <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto,Auto" ColumnSpacing="15" RowSpacing="5">
+                                    <!-- Type Icon -->
+                                    <Frame Grid.RowSpan="3" 
+                                           WidthRequest="40" HeightRequest="40" 
+                                           CornerRadius="20" 
+                                           BackgroundColor="{StaticResource Primary}"
+                                           Padding="0"
+                                           VerticalOptions="Start">
+                                        <Label Text="{Binding Type, Converter={StaticResource TypeToIconConverter}}" 
+                                               FontSize="18" 
+                                               HorizontalOptions="Center" 
+                                               VerticalOptions="Center"
+                                               TextColor="White"/>
+                                    </Frame>
+                                    
+                                    <!-- Title -->
+                                    <Label Grid.Row="0" Grid.Column="1" 
+                                           Text="{Binding Title}" 
+                                           FontSize="15" 
+                                           FontAttributes="{Binding IsUnread, Converter={StaticResource UnreadToFontConverter}}"
+                                           LineBreakMode="TailTruncation"/>
+                                    
+                                    <!-- Repository -->
+                                    <Label Grid.Row="1" Grid.Column="1" 
+                                           Text="{Binding RepositoryFullName}" 
+                                           FontSize="13" 
+                                           TextColor="Gray"/>
+                                    
+                                    <!-- Meta Info -->
+                                    <HorizontalStackLayout Grid.Row="2" Grid.Column="1" Spacing="10">
+                                        <Label Text="{Binding Reason}" FontSize="12" TextColor="Gray"/>
+                                        <Label Text="{Binding UpdatedAt, StringFormat='{0:MMM dd, yyyy}'}" FontSize="12" TextColor="Gray"/>
+                                    </HorizontalStackLayout>
+                                </Grid>
+                            </Frame>
+                        </SwipeView>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </RefreshView>
+    </Grid>
+</ContentPage>
