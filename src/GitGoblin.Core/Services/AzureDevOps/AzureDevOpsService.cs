@@ -308,9 +308,9 @@ public class AzureDevOpsService : IGitService
             throw new InvalidOperationException("Not authenticated. Call AuthenticateAsync first.");
     }
 
-    private Models.Repository MapRepository(GitRepository repo) => new()
+    private static Models.Repository MapRepository(GitRepository repo) => new()
     {
-        Id = repo.Id.GetHashCode(),
+        Id = BitConverter.ToInt64(repo.Id.ToByteArray(), 0),
         Name = repo.Name,
         FullName = $"{repo.ProjectReference?.Name}/{repo.Name}",
         Description = string.Empty,

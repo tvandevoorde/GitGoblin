@@ -1,4 +1,5 @@
 using GitGoblin.Core.Services;
+using GitGoblin.Core.Services.GitHub;
 
 namespace GitGoblin.App.Views;
 
@@ -13,10 +14,10 @@ public partial class RepositoryDetailPage : ContentPage
     public string RepositoryName => $"{Owner}/{Repo}";
     public string Description { get; set; } = string.Empty;
 
-    public RepositoryDetailPage()
+    public RepositoryDetailPage(GitHubService gitService)
     {
         InitializeComponent();
-        _gitService = Application.Current!.Handler!.MauiContext!.Services.GetRequiredService<GitGoblin.Core.Services.GitHub.GitHubService>();
+        _gitService = gitService;
         BindingContext = this;
     }
 

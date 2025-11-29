@@ -67,7 +67,7 @@ public partial class RepositoriesViewModel : ObservableObject
         {
             var filtered = Repositories.Where(r => 
                 r.Name.Contains(value, StringComparison.OrdinalIgnoreCase) ||
-                r.Description.Contains(value, StringComparison.OrdinalIgnoreCase));
+                (r.Description?.Contains(value, StringComparison.OrdinalIgnoreCase) ?? false));
             Repositories = new ObservableCollection<Repository>(filtered);
         }
     }
