@@ -1,0 +1,13 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/GitGoblin.App/GitGoblin.App.csproj" />
+    <Project Path="src/GitGoblin.Core/GitGoblin.Core.csproj" />
+    <Project Path="src/GitGoblin.Git.Abstractions/GitGoblin.Git.Abstractions.csproj" />
+    <Project Path="src/GitGoblin.Git.Cli/GitGoblin.Git.Cli.csproj" />
+    <Project Path="src/GitGoblin.Integrations/GitGoblin.Integrations.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/GitGoblin.Core.Tests/GitGoblin.Core.Tests.csproj" />
+    <Project Path="tests/GitGoblin.Git.Cli.Tests/GitGoblin.Git.Cli.Tests.csproj" />
+  </Folder>
+</Solution>
